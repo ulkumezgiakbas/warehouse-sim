@@ -2,7 +2,6 @@ class Node:
     def __init__(self, parent=None, position=None):
         self.parent = parent
         self.position = position
-
         self.g = 0
         self.h = 0
         self.f = 0
@@ -22,59 +21,43 @@ class Robot:
     def move_up(self, warehouse_map):
         new_y = self.y - 1
         if new_y < 0:
-            print("Error: Out of bounds (Top)!")
             return False
         if warehouse_map[new_y][self.x] == 1:
-            print(f"Obstacle detected at ({self.x}, {new_y})! Recalculating...")
             return False
         
         self.y = new_y
-        print(f"Moved UP. Current position: ({self.x}, {self.y})")
         return True
 
     def move_down(self, warehouse_map):
         new_y = self.y + 1
         max_y = len(warehouse_map)
-        
         if new_y >= max_y:
-            print("Error: Out of bounds (Bottom)!")
             return False
         if warehouse_map[new_y][self.x] == 1:
-            print(f"Obstacle detected at ({self.x}, {new_y})! Recalculating...")
             return False
             
         self.y = new_y
-        print(f"Moved DOWN. Current position: ({self.x}, {self.y})")
         return True
 
     def move_left(self, warehouse_map):
         new_x = self.x - 1
-        
         if new_x < 0:
-            print("Error: Out of bounds (Left)!")
             return False
         if warehouse_map[self.y][new_x] == 1:
-            print(f"Obstacle detected at ({new_x}, {self.y})! Recalculating...")
             return False
             
         self.x = new_x
-        print(f"Moved LEFT. Current position: ({self.x}, {self.y})")
         return True
 
     def move_right(self, warehouse_map):
         new_x = self.x + 1
         max_x = len(warehouse_map[0])
-        
         if new_x >= max_x:
-            print("Error: Out of bounds (Right)!")
             return False
         if warehouse_map[self.y][new_x] == 1:
-            print(f"Obstacle detected at ({new_x}, {self.y})! Recalculating...")
             return False
             
-        # DÜZELTİLEN YER: move_right fonksiyonunun son adımları buraya ait
         self.x = new_x
-        print(f"Moved RIGHT. Current position: ({self.x}, {self.y})")
         return True
     
     def astar(self, warehouse_map, target):
@@ -83,7 +66,6 @@ class Robot:
         
         open_list = []
         closed_list = []
-        
         open_list.append(start_node)
         
         while len(open_list) > 0:
@@ -127,9 +109,13 @@ class Robot:
                 child.h = abs(child.position[0] - target_node.position[0]) + abs(child.position[1] - target_node.position[1])
                 child.f = child.g + child.h
                 
+                skip = False
                 for open_node in open_list:
                     if child == open_node and child.g > open_node.g:
-                        continue
+                        skip = True
+                        break
+                if skip:
+                    continue
                         
                 open_list.append(child)
                 
